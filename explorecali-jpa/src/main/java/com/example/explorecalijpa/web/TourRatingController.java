@@ -1,6 +1,9 @@
 package com.example.explorecalijpa.web;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +33,13 @@ public class TourRatingController {
   @ResponseStatus(HttpStatus.CREATED)
   public void createTourRating(@PathVariable(value = "tourId") int tourId,
       @RequestBody @Valid RatingDto ratingDto) {
+    tourRatingService.createNew(tourId, ratingDto.getCustomerId(), ratingDto.getScore(), ratingDto.getComment());
+  }
 
+  @ExceptionHandler(NoSuchElementException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public String return404(NoSuchElementException e) {
+    return e.getMessage();
   }
 
 }
